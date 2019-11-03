@@ -9,17 +9,14 @@ import (
 	"github.com/sfreiberg/simplessh"
 )
 
-func main() { /*
-		var hostname, userName, password string
-		fmt.Printf("Enter a hostname(IP):  ")
-		fmt.Scanln(&hostname)
-		fmt.Printf("Enter a username:  ")
-		fmt.Scanln(&userName)
-		fmt.Printf("Enter a password:  ")
-		fmt.Scanln(&password)*/
-	hostname := "192.168.1.33"
-	userName := "garner"
-	password := "password"
+func main() {
+	var hostname, userName, password string
+	fmt.Printf("Enter a hostname(IP):  ")
+	fmt.Scanln(&hostname)
+	fmt.Printf("Enter a username:  ")
+	fmt.Scanln(&userName)
+	fmt.Printf("Enter a password:  ")
+	fmt.Scanln(&password)
 
 	//PSTREE: view all processes as a tree
 	http.HandleFunc("/top", func(a http.ResponseWriter, b *http.Request) {
