@@ -15,11 +15,52 @@ func main() {
 	fmt.Scanln(&userName)
 	fmt.Printf("Enter a password:  ")
 	fmt.Scanln(&password)
+
+	//TOP command: view all linux processes
 	http.HandleFunc("/top", func(w http.ResponseWriter, r *http.Request) {
 		var top = terminalCommand(hostname, userName, password, "top -bn1")
-		fmt.Fprintf(w, "%s\n", "Ouput for top command")
+		fmt.Fprintf(w, "%s\n", "TOP:")
 		fmt.Fprintf(w, "%s", top)
 	})
+
+	//PSTREE: view all processes as a tree
+	http.HandleFunc("/pstree", func(w http.ResponseWriter, r *http.Request) {
+		var pstree = terminalCommand(hostname, userName, password, "pstree")
+		fmt.Fprintf(w, "%s\n", "pstree")
+		fmt.Fprintf(w, "%s", pstree)
+	})
+
+	//TREE: view all files as a tree
+	http.HandleFunc("/tree", func(w http.ResponseWriter, r *http.Request) {
+		var tree = terminalCommand(hostname, userName, password, "tree")
+		fmt.Fprintf(w, "%s\n", "tree")
+		fmt.Fprintf(w, "%s", tree)
+	})
+	//HISTORY: view all history
+	http.HandleFunc("/history", func(w http.ResponseWriter, r *http.Request) {
+		var history = terminalCommand(hostname, userName, password, "cat ~/.bash_history | nl")
+		fmt.Fprintf(w, "%s\n", "history")
+		fmt.Fprintf(w, "%s", history)
+	})
+	//FINGER: list user information
+	http.HandleFunc("/finger", func(w http.ResponseWriter, r *http.Request) {
+		var finger = terminalCommand(hostname, userName, password, "finger")
+		fmt.Fprintf(w, "%s\n", "finger")
+		fmt.Fprintf(w, "%s", finger)
+	})
+	//SYSLOG
+	http.HandleFunc("/syslog", func(w http.ResponseWriter, r *http.Request) {
+		var syslog = terminalCommand(hostname, userName, password, "cat /var/log/syslog")
+		fmt.Fprintf(w, "%s\n", "syslog")
+		fmt.Fprintf(w, "%s", syslog)
+	})
+	//AUTHLOG
+	http.HandleFunc("/authlog", func(w http.ResponseWriter, r *http.Request) {
+		var authlog = terminalCommand(hostname, userName, password, "cat /var/log/auth.log")
+		fmt.Fprintf(w, "%s\n", "authlog")
+		fmt.Fprintf(w, "%s", authlog)
+	})
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		var output = terminalCommand(hostname, userName, password, "ps")
 		var html = `<html>
@@ -83,8 +124,13 @@ func main() {
 		<div id="main">
 		  <article>Command Line Options
 		  <ol>
-			  
-			  <li><a href="/top">Ru top</a></li>
+		  <li><a href="/pstree">View all processses as a tree</a></li>
+			  <li><a href="/top">View all processes</a></li>
+			  <li><a href="/tree">View all tree</a></li>
+			  <li><a href="/history">View all histroy</a></li>
+			  <li><a href="/finger">View all finger</a></li>
+			  <li><a href="/syslog">View all SYSLOG</a></li>
+			  <li><a href="/authlog">View all AUTHLOG</a></li>
 		  </ol></article>
 		  <nav></nav>
 		  <aside></aside>
