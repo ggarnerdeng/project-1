@@ -4,66 +4,81 @@ import (
 	"fmt"
 	"net/http"
 
+	//"text/html"
+
 	"github.com/sfreiberg/simplessh"
 )
 
-func main() {
-	var hostname, userName, password string
-	fmt.Printf("Enter a hostname(IP):  ")
-	fmt.Scanln(&hostname)
-	fmt.Printf("Enter a username:  ")
-	fmt.Scanln(&userName)
-	fmt.Printf("Enter a password:  ")
-	fmt.Scanln(&password)
-
-	//TOP command: view all linux processes
-	http.HandleFunc("/top", func(w http.ResponseWriter, r *http.Request) {
-		var top = terminalCommand(hostname, userName, password, "top -bn1")
-		fmt.Fprintf(w, "%s\n", "TOP:")
-		fmt.Fprintf(w, "%s", top)
-	})
+func main() { /*
+		var hostname, userName, password string
+		fmt.Printf("Enter a hostname(IP):  ")
+		fmt.Scanln(&hostname)
+		fmt.Printf("Enter a username:  ")
+		fmt.Scanln(&userName)
+		fmt.Printf("Enter a password:  ")
+		fmt.Scanln(&password)*/
+	hostname := "192.168.1.33"
+	userName := "garner"
+	password := "password"
 
 	//PSTREE: view all processes as a tree
-	http.HandleFunc("/pstree", func(w http.ResponseWriter, r *http.Request) {
-		var pstree = terminalCommand(hostname, userName, password, "pstree")
-		fmt.Fprintf(w, "%s\n", "pstree")
-		fmt.Fprintf(w, "%s", pstree)
+	http.HandleFunc("/top", func(a http.ResponseWriter, b *http.Request) {
+		var top = terminalCommand(hostname, userName, password, "top -bn1")
+		fmt.Fprintf(a, "%s\n", "Viewing all processes")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintf(a, "%s", top)
+
 	})
 
 	//TREE: view all files as a tree
-	http.HandleFunc("/tree", func(w http.ResponseWriter, r *http.Request) {
+	//a = response
+	//b = request
+	http.HandleFunc("/tree", func(a http.ResponseWriter, b *http.Request) {
 		var tree = terminalCommand(hostname, userName, password, "tree")
-		fmt.Fprintf(w, "%s\n", "tree")
-		fmt.Fprintf(w, "%s", tree)
+		fmt.Fprintf(a, "%s\n", "Viewing all files")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintf(a, "%s", tree)
 	})
 	//HISTORY: view all history
-	http.HandleFunc("/history", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/history", func(a http.ResponseWriter, b *http.Request) {
 		var history = terminalCommand(hostname, userName, password, "cat ~/.bash_history | nl")
-		fmt.Fprintf(w, "%s\n", "history")
-		fmt.Fprintf(w, "%s", history)
+		fmt.Fprintf(a, "%s\n", "Viewing user command history")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintf(a, "%s", history)
 	})
 	//FINGER: list user information
-	http.HandleFunc("/finger", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/finger", func(a http.ResponseWriter, b *http.Request) {
 		var finger = terminalCommand(hostname, userName, password, "finger")
-		fmt.Fprintf(w, "%s\n", "finger")
-		fmt.Fprintf(w, "%s", finger)
+		fmt.Fprintf(a, "%s\n", "Viewing user information")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintf(a, "%s", finger)
 	})
 	//SYSLOG
-	http.HandleFunc("/syslog", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/syslog", func(a http.ResponseWriter, b *http.Request) {
 		var syslog = terminalCommand(hostname, userName, password, "cat /var/log/syslog")
-		fmt.Fprintf(w, "%s\n", "syslog")
-		fmt.Fprintf(w, "%s", syslog)
+		fmt.Fprintf(a, "%s\n", "Viewing system log")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintf(a, "%s", syslog)
 	})
 	//AUTHLOG
-	http.HandleFunc("/authlog", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/authlog", func(a http.ResponseWriter, b *http.Request) {
 		var authlog = terminalCommand(hostname, userName, password, "cat /var/log/auth.log")
-		fmt.Fprintf(w, "%s\n", "authlog")
-		fmt.Fprintf(w, "%s", authlog)
+		fmt.Fprintf(a, "%s\n", "Viewing login records")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintln(a, " ")
+		fmt.Fprintf(a, "%s", authlog)
 	})
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(a http.ResponseWriter, b *http.Request) {
 		var output = terminalCommand(hostname, userName, password, "ps")
 		var html = `<html>
+		<head>
+		
 		<style>
 		ul {
 		list-style-type: none;
@@ -119,18 +134,19 @@ func main() {
 		  height: 20vh;
 		}
 	  </style>
+			</head>
 	  <body>
 		<header>Logged in as garner@192.168.1.33</header>
 		<div id="main">
 		  <article>Command Line Options
 		  <ol>
-		  <li><a href="/pstree">View all processses as a tree</a></li>
+		 
 			  <li><a href="/top">View all processes</a></li>
-			  <li><a href="/tree">View all tree</a></li>
-			  <li><a href="/history">View all histroy</a></li>
-			  <li><a href="/finger">View all finger</a></li>
-			  <li><a href="/syslog">View all SYSLOG</a></li>
-			  <li><a href="/authlog">View all AUTHLOG</a></li>
+			  <li><a href="/tree">View all files</a></li>
+			  <li><a href="/history">View all history</a></li>
+			  <li><a href="/finger">View user information</a></li>
+			  <li><a href="/syslog">View System Log</a></li>
+			  <li><a href="/authlog">View login history</a></li>
 		  </ol></article>
 		  <nav></nav>
 		  <aside></aside>
@@ -139,8 +155,10 @@ func main() {
 	  </body>
 					</html>
 			`
-		fmt.Fprintf(w, html, output)
+		fmt.Fprintf(a, html, output)
 	})
+	fmt.Println()
+	fmt.Println()
 	fmt.Println("Open Localhost:12345")
 	http.ListenAndServe(":12345", nil)
 }
