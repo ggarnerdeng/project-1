@@ -1,10 +1,23 @@
+//Linux Interface Tool (LIT)
+//	By: Garner Deng
+/*
+	This tool allows a user to navigate a linux computer through a ssh connection, without needing
+	to know any linux commands. Ssh into a remote computer on the same network using a username,
+	private IP address, and account password to login. Upon logging in, the user is instructed to
+	open up localhost:12345 in a web browser. A HTML page will be used to display some options of
+	the tool. Some options such as 'viewing all processes', 'list all files' and etc are provided.
+	This is a basic implementation of an interface that allows a user to use command line
+	executions without knowing the actual commands for that OS(in this case, linux).
+
+	To run: import the necessary dependancies listed, if file is not built. Execute by clicking the
+	executable file, or by running "go main.go" if application is in source code form.
+*/
+
 package main
 
 import (
 	"fmt"
 	"net/http"
-
-	//"text/html"
 
 	"github.com/sfreiberg/simplessh"
 )
@@ -18,19 +31,15 @@ func main() {
 	fmt.Printf("Enter a password:  ")
 	fmt.Scanln(&password)
 
-	//PSTREE: view all processes as a tree
+	//TOP: VIEW ALL PROCESSESE
 	http.HandleFunc("/top", func(a http.ResponseWriter, b *http.Request) {
 		var top = terminalCommand(hostname, userName, password, "top -bn1")
 		fmt.Fprintf(a, "%s\n", "Viewing all processes")
 		fmt.Fprintln(a, " ")
 		fmt.Fprintln(a, " ")
 		fmt.Fprintf(a, "%s", top)
-
 	})
-
 	//TREE: view all files as a tree
-	//a = response
-	//b = request
 	http.HandleFunc("/tree", func(a http.ResponseWriter, b *http.Request) {
 		var tree = terminalCommand(hostname, userName, password, "tree")
 		fmt.Fprintf(a, "%s\n", "Viewing all files")
@@ -136,7 +145,7 @@ func main() {
 		<header>Logged in as garner@192.168.1.33</header>
 		<div id="main">
 		<title> Remote Login</title>
-		  <article>Command Line Options
+		  <article>Linux Interface Tool
 		  <ol>
 		 
 			  <li><a href="/top">View all processes</a></li>
