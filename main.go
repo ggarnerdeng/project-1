@@ -135,6 +135,7 @@ func main() {
 	  <body>
 		<header>Logged in as garner@192.168.1.33</header>
 		<div id="main">
+		<title> Remote Login</title>
 		  <article>Command Line Options
 		  <ol>
 		 
@@ -155,7 +156,7 @@ func main() {
 		fmt.Fprintf(a, html, output)
 	})
 	fmt.Println()
-	fmt.Println()
+	fmt.Println("Successfully connected;")
 	fmt.Println("Open Localhost:12345")
 	http.ListenAndServe(":12345", nil)
 }
